@@ -17,7 +17,7 @@ navegador.
 - `src/background.js`: pipeline `automatic-speech-recognition`, uma
   transcrição por vez. O modelo fica no Cache Storage depois do primeiro uso.
 - Nuvem paga: só o "em breve". Os cliques viram o evento `cloud_interest`.
-  Para enviar os eventos ao PostHog, faça o build com `POSTHOG_KEY=phc_... npm run build`.
+  Os eventos vão para o projeto "Zap Transcreve" do PostHog. `npm test` faz o build sem analytics (`POSTHOG_KEY=`).
 
 ## Desenvolvimento
 

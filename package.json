@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "test": "node test/e2e.mjs",
+    "test": "POSTHOG_KEY= node scripts/build.mjs && node test/e2e.mjs",
     "zip": "npm run build && cd dist && rm -f ../zap-transcreve.zip && zip -qr ../zap-transcreve.zip ."
   },
   "keywords": [],

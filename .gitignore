@@ -8,3 +8,4 @@ test/live/inject.js
 test/live/inject.min.js
 .DS_Store
 ._*
+store/.profile/
