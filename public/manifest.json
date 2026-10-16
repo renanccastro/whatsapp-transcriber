@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "Zap Transcreve — áudios do WhatsApp em texto",
+  "short_name": "Zap Transcreve",
+  "version": "0.1.0",
+  "description": "Transcreve os áudios do WhatsApp Web direto na conversa. Roda no seu computador, sem enviar o áudio para ninguém.",
+  "minimum_chrome_version": "124",
+  "icons": { "16": "icons/16.png", "48": "icons/48.png", "128": "icons/128.png" },
+  "action": { "default_popup": "popup.html", "default_icon": { "16": "icons/16.png", "48": "icons/48.png" } },
+  "background": { "service_worker": "background.js", "type": "module" },
+  "permissions": ["storage", "unlimitedStorage"],
+  "host_permissions": ["https://huggingface.co/*", "https://*.hf.co/*"],
+  "content_scripts": [
+    {
+      "matches": ["https://web.whatsapp.com/*"],
+      "js": ["page.js"],
+      "world": "MAIN",
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://web.whatsapp.com/*"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+  }
+}

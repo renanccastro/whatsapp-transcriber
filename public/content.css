@@ -1,0 +1,48 @@
+.zt-box {
+  margin: 4px 0 2px;
+  padding: 6px 8px 0;
+  border-top: 1px solid rgba(127, 127, 127, 0.25);
+  font-size: 14px;
+  line-height: 19px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.zt-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  user-select: text;
+}
+.zt-status {
+  opacity: 0.75;
+  font-style: italic;
+}
+.zt-error {
+  font-style: normal;
+}
+.zt-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+.zt-btn {
+  font: inherit;
+  font-size: 12px;
+  line-height: 16px;
+  color: inherit;
+  background: transparent;
+  border: 1px solid rgba(127, 127, 127, 0.45);
+  border-radius: 999px;
+  padding: 3px 10px;
+  cursor: pointer;
+}
+.zt-btn:hover {
+  background: rgba(127, 127, 127, 0.15);
+}
+.zt-btn:disabled {
+  cursor: default;
+  opacity: 0.8;
+}
+.zt-cloud {
+  border-style: dashed;
+}

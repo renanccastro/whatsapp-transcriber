@@ -1,0 +1,22 @@
+{
+  "name": "zap-transcreve",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node test/e2e.mjs",
+    "zip": "npm run build && cd dist && rm -f ../zap-transcreve.zip && zip -qr ../zap-transcreve.zip ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@huggingface/transformers": "^4.3.1"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2",
+    "playwright": "^1.64.1"
+  },
+  "private": true
+}

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Zap Transcreve</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <img src="icons/48.png" alt="" width="28" height="28">
+    <h1>Zap Transcreve</h1>
+  </header>
+
+  <section class="card">
+    <label class="row">
+      <span>
+        <strong>Transcrever automaticamente</strong>
+        <small>Os áudios viram texto assim que aparecem na conversa.</small>
+      </span>
+      <input type="checkbox" id="auto">
+    </label>
+  </section>
+
+  <section class="card">
+    <label class="field">
+      <strong>Qualidade</strong>
+      <select id="model"></select>
+      <small id="device">Verificando o seu computador…</small>
+    </label>
+    <label class="field">
+      <strong>Idioma dos áudios</strong>
+      <select id="language">
+        <option value="portuguese">Português</option>
+        <option value="english">Inglês</option>
+        <option value="spanish">Espanhol</option>
+        <option value="auto">Detectar sozinho</option>
+      </select>
+    </label>
+    <p class="note">🔒 Tudo roda no seu computador. O áudio não sai do seu navegador.</p>
+  </section>
+
+  <section class="card cloud">
+    <span class="badge">Em breve</span>
+    <strong>Transcrição na nuvem</strong>
+    <small>Mais rápida e mais precisa, mesmo em computador fraco. Com resumo dos áudios longos.</small>
+    <button type="button" id="cloud">Quero usar quando lançar</button>
+    <small id="cloud-done" hidden>Anotado! Avisamos aqui na extensão quando lançar.</small>
+  </section>
+
+  <footer id="stats"></footer>
+  <script src="popup.js"></script>
+</body>
+</html>
