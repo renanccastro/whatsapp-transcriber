@@ -86,9 +86,30 @@ function askWorker(pcm, onProgress) {
 }
 
 // ---------- transcription flow ----------
-async function transcribe(id) {
+// One audio at a time, newest request first: opening a chat queues the
+// visible audios top to bottom, so the latest message is transcribed first.
+const pending = [];
+let running = false;
+
+function transcribe(id) {
   const cur = state.get(id);
   if (cur && ['working', 'done'].includes(cur.status)) return;
+  const i = pending.indexOf(id);
+  if (i >= 0) pending.splice(i, 1);
+  pending.push(id);
+  setState(id, { status: 'working', stage: 'queued' });
+  // Wait a moment so every audio that just became visible is queued first.
+  setTimeout(pump, 150);
+}
+
+async function pump() {
+  if (running) return;
+  running = true;
+  while (pending.length) await run(pending.pop());
+  running = false;
+}
+
+async function run(id) {
   setState(id, { status: 'working', stage: 'fetch' });
   try {
     const { buffer } = await fetchAudio(id);

@@ -6,6 +6,7 @@ const $ = (id) => document.getElementById(id);
   const s = await loadSettings();
   const model = $('model');
   for (const [key, m] of Object.entries(MODELS)) {
+    if (m.hidden) continue;
     model.append(new Option(`${m.label} (${m.size})`, key));
   }
   $('auto').checked = s.auto;
@@ -19,7 +20,7 @@ const $ = (id) => document.getElementById(id);
   chrome.runtime.sendMessage({ type: 'status' }).then((r) => {
     $('device').textContent = r?.device === 'webgpu'
       ? 'Usando a placa de vídeo (rápido).'
-      : 'Sem placa de vídeo disponível: usando o processador. Prefira "Rápido" ou "Equilibrado".';
+      : 'Sem placa de vídeo disponível: usando o processador. Áudios longos podem demorar.';
   });
 
   const { cloudInterest, counters = {} } = await chrome.storage.local.get(['cloudInterest', 'counters']);

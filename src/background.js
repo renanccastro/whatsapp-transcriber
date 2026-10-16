@@ -8,32 +8,41 @@ env.allowLocalModels = false;
 env.backends.onnx.wasm.numThreads = 1; // Workers (threads) are not available in a service worker.
 
 let device = null;
+let hasF16 = false;
 const pipelines = new Map(); // `${model}|${device}` -> Promise<pipeline>
 let queue = Promise.resolve();
 
 async function getDevice() {
   if (device) return device;
+  const { forceDevice } = await chrome.storage.local.get('forceDevice'); // tests only
   try {
-    const adapter = await navigator.gpu?.requestAdapter();
-    device = adapter ? 'webgpu' : 'wasm';
+    const adapter = await navigator.gpu?.requestAdapter({ powerPreference: 'high-performance' });
+    // A software adapter (SwiftShader) is ~20x slower than WASM for Whisper.
+    const software = adapter?.info?.isFallbackAdapter || adapter?.info?.architecture === 'swiftshader';
+    device = forceDevice || (adapter && !software ? 'webgpu' : 'wasm');
+    hasF16 = !!adapter?.features?.has('shader-f16');
   } catch {
     device = 'wasm';
   }
   return device;
 }
 
-function dtypeFor(dev) {
-  return dev === 'webgpu' ? { encoder_model: 'fp32', decoder_model_merged: 'q4' } : 'q8';
+function dtypeFor(dev, modelKey) {
+  if (dev !== 'webgpu') return 'q8';
+  // fp32 encoder of large-v3-turbo is 2.5 GB; use q4 when fp16 is missing.
+  const encoder = hasF16 ? 'fp16' : modelKey === 'turbo' ? 'q4' : 'fp32';
+  return { encoder_model: encoder, decoder_model_merged: 'q4' };
 }
 
 async function getPipeline(modelKey, onProgress) {
   const dev = await getDevice();
-  const model = MODELS[modelKey] || MODELS[DEFAULT_SETTINGS.model];
+  if (!MODELS[modelKey]) modelKey = DEFAULT_SETTINGS.model;
+  const model = MODELS[modelKey];
   const key = `${model.id}|${dev}`;
   if (!pipelines.has(key)) {
     const p = pipeline('automatic-speech-recognition', model.id, {
       device: dev,
-      dtype: dtypeFor(dev),
+      dtype: dtypeFor(dev, modelKey),
       progress_callback: (e) => onProgress?.(e),
     }).catch((err) => {
       pipelines.delete(key);

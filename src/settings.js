@@ -1,13 +1,14 @@
 export const MODELS = {
-  tiny: { id: 'onnx-community/whisper-tiny', label: 'Rápido', size: '~40 MB' },
-  base: { id: 'onnx-community/whisper-base', label: 'Equilibrado', size: '~80 MB' },
-  small: { id: 'onnx-community/whisper-small', label: 'Preciso', size: '~250 MB' },
-  turbo: { id: 'onnx-community/whisper-large-v3-turbo', label: 'Máximo (precisa de placa de vídeo)', size: '~800 MB' },
+  // Hidden from the popup (tests only): it invents text in Portuguese.
+  tiny: { id: 'onnx-community/whisper-tiny', label: 'Tiny', size: '~40 MB', hidden: true },
+  base: { id: 'onnx-community/whisper-base', label: 'Rápido, erra mais', size: '~80 MB' },
+  small: { id: 'onnx-community/whisper-small', label: 'Preciso — recomendado', size: '~250–400 MB' },
+  turbo: { id: 'onnx-community/whisper-large-v3-turbo', label: 'Máximo (precisa de placa de vídeo)', size: '~1,5 GB' },
 };
 
 export const DEFAULT_SETTINGS = {
   auto: true,
-  model: 'base',
+  model: 'small',
   language: 'portuguese',
 };
 
