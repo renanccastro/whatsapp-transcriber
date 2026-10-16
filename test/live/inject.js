@@ -73,7 +73,7 @@
   // src/settings.js
   var DEFAULT_SETTINGS = {
     auto: true,
-    model: "base",
+    model: "small",
     language: "portuguese"
   };
   async function loadSettings() {
@@ -156,9 +156,24 @@
       getPort().postMessage({ type: "transcribe", reqId, pcm, settings });
     });
   }
-  async function transcribe(id) {
+  var pending = [];
+  var running = false;
+  function transcribe(id) {
     const cur = state.get(id);
     if (cur && ["working", "done"].includes(cur.status)) return;
+    const i = pending.indexOf(id);
+    if (i >= 0) pending.splice(i, 1);
+    pending.push(id);
+    setState(id, { status: "working", stage: "queued" });
+    setTimeout(pump, 150);
+  }
+  async function pump() {
+    if (running) return;
+    running = true;
+    while (pending.length) await run(pending.pop());
+    running = false;
+  }
+  async function run(id) {
     setState(id, { status: "working", stage: "fetch" });
     try {
       const { buffer } = await fetchAudio(id);

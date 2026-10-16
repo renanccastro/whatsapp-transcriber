@@ -4,3 +4,5 @@ dist
 test/.profile
 test/*.wav
 test/e2e.png
+test/live/inject.js
+test/live/inject.min.js

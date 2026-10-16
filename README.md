@@ -25,8 +25,14 @@ navegador.
 npm install
 npm run build        # gera dist/
 npm test             # Chromium + extensão + WhatsApp falso + jfk.ogg
+SUITE=pt npm test    # mesmo teste com áudios em português (whisper-small)
 npm run zip          # zap-transcreve.zip
 ```
+
+Teste no WhatsApp de verdade sem instalar a extensão:
+`node test/live/make-inject.mjs` gera `test/live/inject.js`. Cole na aba
+logada. Ele roda o `page.js` e o `content.js` compilados, troca só a API
+`chrome.*` e responde com a duração decodificada no lugar do texto.
 
 Instalar: `chrome://extensions` → Modo do desenvolvedor → "Carregar sem
 compactação" → pasta `dist/`.

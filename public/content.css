@@ -1,6 +1,7 @@
 .zt-box {
   margin: 4px 0 2px;
-  padding: 6px 8px 0;
+  /* Bottom room for WhatsApp's time stamp, which is absolutely positioned. */
+  padding: 6px 8px 18px;
   border-top: 1px solid rgba(127, 127, 127, 0.25);
   font-size: 14px;
   line-height: 19px;
