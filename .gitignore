@@ -3,3 +3,4 @@ dist
 *.zip
 test/.profile
 test/*.wav
+test/e2e.png
