@@ -89,9 +89,21 @@ for (;;) {
 const boxCount = await page.locator('.zt-box').count();
 const texts = await page.$$eval('.zt-box', (bs) => bs.map((b) => b.querySelector('.zt-text')?.innerText ?? null));
 await page.screenshot({ path: resolve(root, 'test/e2e.png'), fullPage: true });
-await ctx.close();
 
-let ok = boxCount === audios.length;
+// One click on the cloud teaser hides it in every bubble, also after reload.
+const cloudBefore = await page.locator('.zt-cloud').count();
+await page.locator('.zt-cloud').first().click();
+const thanked = await page.locator('.zt-cloud').first().innerText();
+await page.waitForTimeout(3500);
+const cloudAfter = await page.locator('.zt-cloud').count();
+await page.reload();
+await page.waitForSelector('.zt-text', { timeout: 30000 });
+const cloudReload = await page.locator('.zt-cloud').count();
+await ctx.close();
+const cloudOk = cloudBefore === audios.length && /Anotado/.test(thanked) && cloudAfter === 0 && cloudReload === 0;
+console.log(cloudOk ? 'PASS' : 'FAIL', `cloud teaser hides after click (${cloudBefore} -> ${cloudAfter}, reload ${cloudReload})`);
+
+let ok = boxCount === audios.length && cloudOk;
 if (!ok) console.log(`FAIL expected ${audios.length} boxes, got ${boxCount}`);
 audios.forEach((a, i) => {
   const pass = texts[i] != null && a.expect.test(texts[i]);

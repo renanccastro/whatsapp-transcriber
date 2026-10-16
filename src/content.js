@@ -7,6 +7,7 @@ const PLAY_LABEL = /(reproduzir|pausar|play|pause|reproducir).*(voz|voice|áudio
 const BOX_CLASS = 'zt-box';
 
 let settings = { ...DEFAULT_SETTINGS };
+let cloudInterest = false; // after one click, the cloud teaser goes away everywhere
 const state = new Map(); // msgId -> { status, text, error, pct }
 const boxes = new Map(); // msgId -> HTMLElement
 let reqSeq = 0;
@@ -178,12 +179,14 @@ function render(box, id) {
   box.append(el('div', 'zt-text', s.text));
   const foot = el('div', 'zt-foot');
   foot.append(action('Copiar', (b) => { navigator.clipboard.writeText(s.text); b.textContent = 'Copiado'; }));
-  foot.append(action('☁️ Mais preciso na nuvem — em breve', (b) => {
-    chrome.runtime.sendMessage({ type: 'track', event: 'cloud_interest', props: { from: 'bubble' } }).catch(() => {});
-    chrome.storage.local.set({ cloudInterest: true });
-    b.textContent = 'Anotado! Avisamos quando lançar.';
-    b.disabled = true;
-  }, 'zt-cloud'));
+  if (!cloudInterest) {
+    foot.append(action('☁️ Mais preciso na nuvem — em breve', (b) => {
+      chrome.runtime.sendMessage({ type: 'track', event: 'cloud_interest', props: { from: 'bubble' } }).catch(() => {});
+      b.textContent = 'Anotado! Avisamos quando lançar.';
+      b.disabled = true;
+      setTimeout(() => chrome.storage.local.set({ cloudInterest: true }), 2500);
+    }, 'zt-cloud'));
+  }
   box.append(foot);
 }
 
@@ -242,8 +245,13 @@ new MutationObserver(() => {
 
 (async () => {
   settings = await loadSettings();
-  chrome.storage.onChanged.addListener(async (_c, area) => {
+  ({ cloudInterest = false } = await chrome.storage.local.get('cloudInterest'));
+  chrome.storage.onChanged.addListener(async (c, area) => {
     if (area === 'sync') settings = await loadSettings();
+    if (area === 'local' && c.cloudInterest?.newValue) {
+      cloudInterest = true;
+      document.querySelectorAll('.zt-cloud').forEach((b) => b.remove());
+    }
   });
   scan();
 })();
